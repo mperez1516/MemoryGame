@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+
     namespace = "com.example.memorygame"
     compileSdk = 35
 
@@ -32,6 +33,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 }
 
