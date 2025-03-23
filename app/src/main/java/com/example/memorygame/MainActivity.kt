@@ -46,9 +46,9 @@ class MainActivity : AppCompatActivity() {
     //Se inicializa el turno para primer jugador
     private var turno = 1
     //Puntos del jugador
-    private var puntos = 0
+    private var puntosP1 = 0
     //Puntos de la CPU
-    private var cpuPuntos=0
+    private var puntosP2=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +63,8 @@ class MainActivity : AppCompatActivity() {
 
 
         //Accedemos a los elementos con binding
-        binding.tvP1.text="Jugador 1"
-        binding.tvP2.text="Jugador 2"
+        binding.tvP1.text="Jugador 1: 0 Pts"
+        binding.tvP2.text="Jugador 2: 0 Pts"
 
         //  Inicializamos el array de ImageView asociando la carta con su referencia
         cardImages= arrayOf(
@@ -135,14 +135,23 @@ class MainActivity : AppCompatActivity() {
         val iv2= cardImages[clickSegundo]
 
         if (primeraCarta%100 == segundaCarta%100){
-            puntos ++
-            //Desabilitar la carta
-            iv1.isEnabled=false
-            iv2.isEnabled=false
+            if(turno == 1) {
+                puntosP1++
+                binding.tvP1.text= "Jugador 1: $puntosP1 Pts"
+            }else{
+               puntosP2 ++
+               binding.tvP2.text= "Jugador2: $puntosP2 Pts"
+            }
+
+            iv1.isEnabled= false
+            iv2.isEnabled= false
         }else{
             //Poner la imagen reversa
             iv1.setImageResource(R.drawable.cartainicial)
             iv2.setImageResource(R.drawable.cartainicial)
+
+            turno= if(turno == 1) 2 else 1
+            Toast.makeText(baseContext, "Turno jugador $turno", Toast.LENGTH_LONG).show()
 
         }
 
@@ -154,24 +163,33 @@ class MainActivity : AppCompatActivity() {
         segundaCarta= -1
 
         //Verificar si el juego termino
-        if(puntos + cpuPuntos == (cartasId.size/2)) {
+        if(puntosP1 + puntosP2 == (cartasId.size/2)) {
             showWinner()
         }
     }
 
     //Metodo para mostrar ganador
     private fun showWinner(){
-        val message= if(puntos> cpuPuntos) "Ganaste" else "Perdiste"
+        val message= when{
+            puntosP1>puntosP2 -> "Jugador 1 Gana"
+            puntosP2>puntosP1 -> "Jugador 2 Gana"
+            else-> "Empate"
+        }
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     //Metodo para reiniciar juego
     private fun restartGame(){
         cartasId.shuffle()
-        puntos=0
-        cpuPuntos=0
+        puntosP1=0
+        puntosP2=0
         primeraCarta= -1
         segundaCarta= -1
+        turno=1
+
+        // Actualizar la interfaz
+        binding.tvP1.text = "Jugador 1: 0 Pts"
+        binding.tvP2.text = "Jugador 2: 0 Pts"
 
         //Volver a mostrar las cartas
         cardImages.forEach {
