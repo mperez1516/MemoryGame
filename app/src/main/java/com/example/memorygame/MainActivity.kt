@@ -171,10 +171,12 @@ class MainActivity : AppCompatActivity() {
         binding.tvP1.text = "Jugador 1: 0 Pts"
         binding.tvP2.text = "Jugador 2: 0 Pts"
 
-        //Volver a mostrar las cartas
-        cardImages.forEach {
-            it.setImageResource(R.drawable.cartainicial)
-            it.isEnabled= true
+        // Volver a mostrar las cartas y asignarles sus nuevos identificadores
+        for (i in cardImages.indices) {
+            cardImages[i].setImageResource(R.drawable.cartainicial)
+            cardImages[i].tag = cartasId[i] // Asignar nuevo identificador
+            cardImages[i].isEnabled = true
+            cardImages[i].setOnClickListener { cardClicked(it) }
         }
     }
 
